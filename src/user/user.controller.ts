@@ -1,8 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import { UserSubscribeDto } from './dto/user-subscribe.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { LoginCredentialsDto } from './dto/login-credentials-dto';
+import { Response } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -14,7 +15,10 @@ export class UserController {
   }
 
   @Post('login')
-  login(@Body() credentials: LoginCredentialsDto): Promise<Partial<User>> {
-    return this.userService.login(credentials);
+  login(
+    @Body() credentials: LoginCredentialsDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.userService.login(credentials, res);
   }
 }
