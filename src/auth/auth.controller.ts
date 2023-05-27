@@ -1,17 +1,17 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { UserSubscribeDto } from './dto/user-subscribe.dto';
-import { User } from './entities/user.entity';
-import { UserService } from './user.service';
+import { User } from '../user/entities/user.entity';
+import { AuthService } from './auth.service';
 import { LoginCredentialsDto } from './dto/login-credentials-dto';
 import { Response } from 'express';
 
-@Controller('user')
-export class UserController {
-  constructor(private userService: UserService) {}
+@Controller('auth')
+export class AuthController {
+  constructor(private authService: AuthService) {}
 
   @Post('subscribe')
   register(@Body() userData: UserSubscribeDto): Promise<Partial<User>> {
-    return this.userService.register(userData);
+    return this.authService.register(userData);
   }
 
   @Post('login')
@@ -19,6 +19,6 @@ export class UserController {
     @Body() credentials: LoginCredentialsDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    return this.userService.login(credentials, res);
+    return this.authService.login(credentials, res);
   }
 }

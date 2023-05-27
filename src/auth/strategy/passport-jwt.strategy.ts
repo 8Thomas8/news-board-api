@@ -4,7 +4,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PayloadInterface } from '../interfaces/payload.interface';
 import { Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
+import { User } from '../../user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 

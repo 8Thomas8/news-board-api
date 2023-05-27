@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module';
 import * as dotenv from 'dotenv';
 import { ConfigModule } from '@nestjs/config';
 import { appConfig } from './config/app.config';
+import { AuthModule } from './auth/auth.module';
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ dotenv.config();
       synchronize: true,
     }),
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

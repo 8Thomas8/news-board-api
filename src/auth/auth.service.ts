@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { UserSubscribeDto } from './dto/user-subscribe.dto';
 import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { LoginCredentialsDto } from './dto/login-credentials-dto';
@@ -14,7 +14,7 @@ import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class UserService {
+export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
