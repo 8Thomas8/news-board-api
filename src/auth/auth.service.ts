@@ -5,13 +5,19 @@ import {
 } from '@nestjs/common';
 import { UserSubscribeDto } from './dto/user-subscribe.dto';
 import { Repository } from 'typeorm';
-import { User } from '../user/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { LoginCredentialsDto } from './dto/login-credentials-dto';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
+
+interface JwtPayload {
+  username: string;
+  email: string;
+  role: string;
+}
 
 @Injectable()
 export class AuthService {
@@ -22,7 +28,7 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async register(userData: UserSubscribeDto): Promise<Partial<User>> {
+  async register(userData: UserSubscribeDto, res: Response): Promise<void> {
     const user = this.userRepository.create({
       ...userData,
     });
@@ -37,15 +43,16 @@ export class AuthService {
       );
     }
 
-    return {
-      id: user.id,
+    const payload = {
       username: user.username,
       email: user.email,
       role: user.role,
     };
+
+    this.generateResponseWithCookie(res, payload);
   }
 
-  async login(credentials: LoginCredentialsDto, res: Response) {
+  async login(credentials: LoginCredentialsDto, res: Response): Promise<void> {
     const { email, password } = credentials;
 
     const user = await this.userRepository
@@ -74,10 +81,19 @@ export class AuthService {
       role: user.role,
     };
 
-    const jwt = await this.jwtService.sign(payload);
+    this.generateResponseWithCookie(res, payload);
+  }
 
-    res
-      .cookie('Authentication', jwt, {
+  async generateJwt(payload: JwtPayload): Promise<string> {
+    return await this.jwtService.sign(payload);
+  }
+
+  async generateResponseWithCookie(
+    res: Response,
+    payload: JwtPayload,
+  ): Promise<Response> {
+    return res
+      .cookie('Authentication', await this.generateJwt(payload), {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
