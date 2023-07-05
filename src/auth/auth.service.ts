@@ -103,4 +103,8 @@ export class AuthService {
       })
       .send();
   }
+
+  async verifyJwt(token: string) {
+    return await this.jwtService.verify(token);
+  }
 }

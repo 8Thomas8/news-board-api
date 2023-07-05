@@ -1,3 +1,4 @@
+import { IsNotEmpty } from 'class-validator';
 import { TimestampEntites } from 'src/Generics/timestamp.entites';
 import { UserRoleEnum } from 'src/enum/userRole.enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
@@ -5,6 +6,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class User extends TimestampEntites {
   @PrimaryGeneratedColumn('uuid')
+  @IsNotEmpty()
   id: string;
 
   @Column({
